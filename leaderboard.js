@@ -1,7 +1,7 @@
 console.log("Hello World");
 
 		PlayersList = new Mongo.Collection('players');
-
+		// UserAccounts = new Mongo.Collection('users');
 
 if (Meteor.isClient){
 
@@ -39,7 +39,33 @@ if (Meteor.isClient){
 		'click .decrement': function(){
 			var selectedPlayer = Session.get('selectedPlayer');
 			PlayersList.update({_id:selectedPlayer},{$inc:{score: -5}})
+		},
+		'click .remove': function(){
+			var selectedPlayer = Session.get('selectedPlayer');
+			PlayersList.remove({_id:selectedPlayer})
+
+		},
+		'click #remove': function(){
+			if(confirm("Do you really want to delete?"))
+			{
+			var selectedPlayer = this._id;
+			PlayersList.remove({_id:selectedPlayer})}
+			else{}
 		}
+	})
+	Template.addPlayerForm.events({
+		'submit form': function(event){
+			event.preventDefault();
+			console.log("Form Submitted")
+			console.log(event.type);
+			var playerName = event.target.playerName.value;
+			console.log(playerName);
+			PlayersList.insert({
+				name: playerName,
+				score: 0
+			})
+			event.target.playerName.value="";
+		} 
 	})
 
 }
